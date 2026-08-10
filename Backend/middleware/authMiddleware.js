@@ -2,7 +2,13 @@ import jwt from "jsonwebtoken";
 
 const authMiddleware = (req, res, next) => {
   try {
-    const token = req.cookies.token;
+    console.log("================================");
+    console.log("AUTH REQUEST:", req.method, req.originalUrl);
+    console.log("COOKIES RECEIVED:", req.cookies);
+    console.log("TOKEN:", req.cookies?.token ? "YES" : "NO");
+    console.log("================================");
+
+    const token = req.cookies?.token;
 
     if (!token) {
       return res.status(401).json({
@@ -17,7 +23,7 @@ const authMiddleware = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error("Auth middleware error:", error);
+    console.error("AUTH ERROR:", error);
 
     return res.status(401).json({
       success: false,
