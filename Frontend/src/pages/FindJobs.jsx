@@ -507,34 +507,6 @@ const FindJobs = () => {
         ================================================= */}
 
         <div className="mb-7">
-          {/* Back Button */}
-          <button
-            onClick={() => navigate(-1)}
-            className="
-      inline-flex
-      items-center
-      gap-2
-      mb-5
-      text-sm
-      font-medium
-      text-slate-500
-      hover:text-blue-600
-      transition-colors
-      duration-200
-      group
-    "
-          >
-            <FaArrowLeft
-              className="
-        text-sm
-        transition-transform
-        duration-200
-        group-hover:-translate-x-1
-      "
-            />
-            Back
-          </button>
-
           <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">
             Find Jobs
           </h1>

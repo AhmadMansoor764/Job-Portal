@@ -293,33 +293,6 @@ const JobSeekerProfile = () => {
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
         {/* =====================================================
-BACK TO DASHBOARD
-===================================================== */}
-
-        <div className="mb-6">
-          <button
-            type="button"
-            onClick={() =>
-              navigate("/JobSeekerDashboardTemplate/JobSeekerDashboard")
-            }
-            className="
-      flex
-      items-center
-      gap-2
-      text-sm
-      font-medium
-      text-slate-600
-      hover:text-blue-600
-      transition
-    "
-          >
-            <FaArrowLeft className="text-xs" />
-
-            <span>Back to Dashboard</span>
-          </button>
-        </div>
-
-        {/* =====================================================
 PROFILE HEADER
 ===================================================== */}
 

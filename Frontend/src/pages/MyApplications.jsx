@@ -1277,34 +1277,6 @@ const MyApplications = () => {
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-10">
         <div className="mb-8">
-          {/* BACK BUTTON */}
-          <button
-            onClick={() => navigate(-1)}
-            className="
-      inline-flex
-      items-center
-      gap-2
-      mb-5
-      px-3.5
-      py-2
-      rounded-xl
-      border
-      border-slate-200
-      bg-white
-      text-slate-600
-      text-sm
-      font-semibold
-      hover:border-blue-300
-      hover:text-blue-600
-      hover:bg-blue-50
-      transition-all
-      duration-200
-    "
-          >
-            <FaArrowLeft className="text-xs" />
-            Back
-          </button>
-
           {/* ORIGINAL HEADER */}
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
             <div>

@@ -98,62 +98,78 @@ const Login = () => {
         onSubmit={handleSubmit}
         className="shadow-md rounded-md pt-10 pb-5 bg-white w-4/5 flex flex-col justify-center items-center md:w-3/5 lg:w-2/5"
       >
-        <div className="border-2 border-gray-200 rounded-md shadow-md w-4/5 ">
-          <GoogleLogin
-            locale="en"
-            onSuccess={async (credentialResponse) => {
-              try {
-                const response = await fetch(
-                  `${import.meta.env.VITE_API_URL}/api/auth/google`,
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
+        <div className="border-2 border-gray-200 rounded-md shadow-md w-4/5">
+          {loading ? (
+            <div className="flex items-center justify-center gap-3 py-3">
+              <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+
+              <span className="text-gray-700 font-medium">
+                Signing in with Google...
+              </span>
+            </div>
+          ) : (
+            <GoogleLogin
+              locale="en"
+              onSuccess={async (credentialResponse) => {
+                setLoading(true);
+                setError("");
+
+                try {
+                  const response = await fetch(
+                    `${import.meta.env.VITE_API_URL}/api/auth/google`,
+                    {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      credentials: "include",
+                      body: JSON.stringify({
+                        credential: credentialResponse.credential,
+                        action: "login",
+                      }),
                     },
-                    credentials: "include",
-                    body: JSON.stringify({
-                      credential: credentialResponse.credential,
-                      action: "login",
-                    }),
-                  },
-                );
+                  );
 
-                const data = await response.json();
+                  const data = await response.json();
 
-                console.log(data);
+                  console.log(data);
 
-                // User doesn't exist
-                if (response.status === 404) {
-                  navigate("/accountType", {
-                    state: {
-                      message:
-                        "No account found We couldn't find an existing JobPortal account linked to your Google account. Choose the type of account you'd like to create below.. Please sign up first.",
-                    },
-                  });
+                  if (response.status === 404) {
+                    navigate("/accountType", {
+                      state: {
+                        message:
+                          "No account found. We couldn't find an existing JobPortal account linked to your Google account. Please sign up first.",
+                      },
+                    });
 
-                  return;
+                    return;
+                  }
+
+                  if (!response.ok) {
+                    throw new Error(data.message || "Google login failed");
+                  }
+
+                  if (data.user.role === "jobSeeker") {
+                    navigate("/JobSeekerDashboardTemplate/JobSeekerDashboard");
+                  } else if (data.user.role === "employer") {
+                    navigate("/employer/dashboard");
+                  } else {
+                    navigate("/");
+                  }
+                } catch (error) {
+                  console.error("Google login error:", error);
+
+                  setError(error.message || "Google login failed.");
+                } finally {
+                  setLoading(false);
                 }
-
-                if (!response.ok) {
-                  throw new Error(data.message);
-                }
-
-                // Existing user
-                if (data.user.role === "jobSeeker") {
-                  navigate("/JobSeekerDashboardTemplate/JobSeekerDashboard");
-                } else if (data.user.role === "employer") {
-                  navigate("/employer/dashboard");
-                } else {
-                  navigate("/");
-                }
-              } catch (error) {
-                setError(error.message);
-              }
-            }}
-            onError={() => {
-              console.log("Google Login Failed");
-            }}
-          />
+              }}
+              onError={() => {
+                setLoading(false);
+                setError("Google login failed. Please try again.");
+              }}
+            />
+          )}
         </div>
 
         <div className="flex justify-center items-center gap-2 w-4/5 mt-6">
