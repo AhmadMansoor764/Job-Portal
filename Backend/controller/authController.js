@@ -97,8 +97,7 @@ export const checkEmail = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    // Get email and password from the request body
-    const { email, password } = req.body;
+    const { email, password, rememberMe } = req.body;
 
     // Validate input
     if (!email || !password) {
@@ -108,10 +107,9 @@ export const login = async (req, res) => {
       });
     }
 
-    // Find the user by email
+    // Find the user
     const user = await User.findOne({ email });
 
-    // Check if user exists
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -119,10 +117,9 @@ export const login = async (req, res) => {
       });
     }
 
-    // Compare the entered password with the hashed password
+    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
 
-    // If password doesn't match
     if (!isMatch) {
       return res.status(400).json({
         success: false,
@@ -130,7 +127,7 @@ export const login = async (req, res) => {
       });
     }
 
-    // Generate JWT token
+    // JWT expiration
     const token = jwt.sign(
       {
         id: user._id,
@@ -138,14 +135,19 @@ export const login = async (req, res) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: rememberMe ? "30d" : "1d",
       },
     );
 
-    // Store the token in an HTTP-only cookie
-    res.cookie("token", token, cookieOptions);
+    // Cookie options for this login
+    const loginCookieOptions = {
+      ...cookieOptions,
+      maxAge: rememberMe ? 30 * 24 * 60 * 60 * 1000 : undefined,
+    };
 
-    // Send success response
+    // Store token in HTTP-only cookie
+    res.cookie("token", token, loginCookieOptions);
+
     return res.status(200).json({
       success: true,
       message: "User logged in successfully.",
@@ -167,7 +169,6 @@ export const login = async (req, res) => {
     });
   }
 };
-
 // google authentication section when the user logs in
 
 export const googleLogin = async (req, res) => {
