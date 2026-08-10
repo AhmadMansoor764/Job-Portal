@@ -6,8 +6,8 @@ import cookieParser from "cookie-parser";
 import jobRoutes from "./Routes/jobRoutes.js";
 import applicationRoutes from "./Routes/applicationRoutes.js";
 import profileRoutes from "./Routes/profileRoutes.js";
-import jobSeekerDashboardRoutes from "./routes/jobSeekerDashboardRoutes.js";
-import employerDashboardRoutes from "./routes/employerDashboardRoutes.js";
+import jobSeekerDashboardRoutes from "./Routes/jobSeekerDashboardRoutes.js";
+import employerDashboardRoutes from "./Routes/employerDashboardRoutes.js";
 import cors from "cors";
 
 console.log("SUPABASE URL:", process.env.SUPABASE_URL);
