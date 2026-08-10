@@ -19,7 +19,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://omarzai-job-portal.netlify.app"],
     credentials: true,
   }),
 );
