@@ -138,25 +138,6 @@ const EditProfile = () => {
         ================================================= */}
 
         <div className="mb-6">
-          <button
-            type="button"
-            onClick={() => navigate("/profile")}
-            className="
-              flex
-              items-center
-              gap-2
-              text-sm
-              font-medium
-              text-slate-500
-              hover:text-blue-600
-              transition
-              mb-5
-            "
-          >
-            <FaArrowLeft className="text-xs" />
-            Back to Profile
-          </button>
-
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
             Edit Profile
           </h1>

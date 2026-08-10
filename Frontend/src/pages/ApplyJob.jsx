@@ -413,28 +413,6 @@ const ApplyJob = () => {
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* =================================================
-            TOP NAVIGATION
-        ================================================= */}
-
-        <button
-          type="button"
-          onClick={() => navigate(`/jobs/${job._id}`)}
-          className="
-            flex
-            items-center
-            gap-2
-            text-sm
-            font-medium
-            text-slate-600
-            hover:text-blue-600
-            transition
-          "
-        >
-          <FaArrowLeft className="text-xs" />
-          Back to Job Details
-        </button>
-
-        {/* =================================================
             PAGE HEADER
         ================================================= */}
 

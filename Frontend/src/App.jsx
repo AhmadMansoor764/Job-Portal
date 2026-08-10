@@ -39,6 +39,7 @@ import EmployerLayout from "./pages/EmployerLayout";
 import EmployerApplicants from "./pages/EmployerApplicants";
 import EmployerShortlisted from "./pages/EmployerShortlisted";
 import EmployerInterviews from "./pages/EmployerInterviews";
+import JobSeekerProtectedRoute from "./pages/JobSeekerProtectedRoute";
 
 function App() {
   return (
@@ -55,19 +56,23 @@ function App() {
         element={<JobSeekerCompleteProfile />}
       />
 
-      <Route element={<JobSeekerPageLayout />}>
-        <Route path="/findjob" element={<FindJobs />} />
-        <Route path="/jobs/:id" element={<JobDetails />} />
-        <Route path="/saved-jobs" element={<SavedJobs />} />
-        <Route path="/applied-jobs" element={<AppliedJobs />} />
-        <Route path="/create-job" element={<CreateJob />} />
-        <Route path="/my-applications" element={<MyApplications />} />
-        <Route path="/my-applications/:id" element={<MyApplicationDetails />} />
-        <Route path="/profile" element={<JobSeekerProfile />} />
-        <Route path="/profile/edit" element={<EditProfile />} />
-        <Route path="/jobs/:id/apply" element={<ApplyJob />} />
+      <Route path="/jobs/:id" element={<JobDetails />} />
+      <Route element={<JobSeekerProtectedRoute />}>
+        <Route element={<JobSeekerPageLayout />}>
+          <Route path="/findjob" element={<FindJobs />} />
+          <Route path="/saved-jobs" element={<SavedJobs />} />
+          <Route path="/applied-jobs" element={<AppliedJobs />} />
+          <Route path="/create-job" element={<CreateJob />} />
+          <Route path="/my-applications" element={<MyApplications />} />
+          <Route
+            path="/my-applications/:id"
+            element={<MyApplicationDetails />}
+          />
+          <Route path="/profile" element={<JobSeekerProfile />} />
+          <Route path="/profile/edit" element={<EditProfile />} />
+          <Route path="/jobs/:id/apply" element={<ApplyJob />} />
+        </Route>
       </Route>
-
       {/* =====================================================
           JOB SEEKER DASHBOARD
           

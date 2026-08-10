@@ -15,9 +15,10 @@ const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    rememberMe: false,
   });
 
-  const login = async (email, password) => {
+  const login = async (email, password, rememberMe) => {
     setLoading(true);
     setError("");
     try {
@@ -35,6 +36,7 @@ const Login = () => {
           body: JSON.stringify({
             email,
             password,
+            rememberMe,
           }),
         },
       );
@@ -78,7 +80,7 @@ const Login = () => {
       return;
     }
 
-    await login(formData.email, formData.password);
+    await login(formData.email, formData.password, formData.rememberMe);
   };
 
   return (
@@ -240,10 +242,21 @@ const Login = () => {
             </div>
 
             <div className="flex justify-between">
-              <div className="flex gap-1">
-                <input type="checkbox" />
-                <p className=" text-[0.8rem] sm:text-[1rem]">Remember me</p>
+              <div className="flex gap-1 items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.rememberMe}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      rememberMe: e.target.checked,
+                    })
+                  }
+                />
+
+                <p className="text-[0.8rem] sm:text-[1rem]">Remember me</p>
               </div>
+
               <div>
                 <p className="cursor-pointer text-blue-600 font-medium text-[0.8rem] sm:text-[1rem]">
                   Forgot Password

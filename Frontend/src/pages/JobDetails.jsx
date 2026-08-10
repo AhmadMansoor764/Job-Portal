@@ -39,6 +39,9 @@ const JobDetails = () => {
   const [loadingUser, setLoadingUser] = useState(true);
   const isJobSeeker = user?.role === "jobSeeker";
 
+  const isLoggedIn = Boolean(user);
+  const isGuest = !loadingUser && !user;
+
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
@@ -382,23 +385,6 @@ const JobDetails = () => {
           </h2>
 
           <p className="text-slate-500 mt-2">{error}</p>
-
-          <button
-            onClick={() => navigate(-1)}
-            className="
-              mt-6
-              px-6
-              py-3
-              rounded-xl
-              bg-blue-600
-              text-white
-              font-semibold
-              hover:bg-blue-700
-              transition
-            "
-          >
-            Go Back
-          </button>
         </div>
       </div>
     );
@@ -478,48 +464,45 @@ const JobDetails = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* =================================================
-          MAIN CONTAINER
-      ================================================= */}
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* =================================================
-            TOP NAVIGATION
-        ================================================= */}
-
-        {/* =================================================
-    TOP NAVIGATION
-================================================= */}
-
-        <div className="flex items-center justify-between gap-4 mb-7">
-          {/* ================================
-      BACK BUTTON
-  ================================= */}
-          <button
-            onClick={() => navigate(-1)}
-            className="
-      flex
+      <div className="mb-6 px-4 pt-4">
+        <button
+          onClick={() => {
+            if (isGuest) {
+              navigate("/");
+            } else if (user?.role === "jobSeeker") {
+              navigate("/findjobs");
+            } else {
+              navigate(-1);
+            }
+          }}
+          className="
+      inline-flex
       items-center
       gap-2
       text-sm
-      font-medium
+      font-semibold
       text-slate-600
       hover:text-blue-600
-      transition
-      flex-shrink-0
+      transition-colors
     "
-          >
-            <FaArrowLeft className="text-xs" />
+        >
+          <FaArrowLeft />
 
-            {isJobOwner ? "Back to My Jobs" : "Back to Jobs"}
-          </button>
-
+          {isGuest
+            ? "Back to Home"
+            : user?.role === "jobSeeker"
+              ? "Back to Find Jobs"
+              : "Back"}
+        </button>
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex items-center justify-between gap-4 mb-7">
           {/* =================================================
       RIGHT SIDE ACTIONS
   ================================================= */}
 
           {isJobOwner ? (
-            <>
+            <div>
               {/* ================================
           DESKTOP ACTIONS
       ================================= */}
@@ -751,37 +734,57 @@ const JobDetails = () => {
                   </button>
                 </div>
               </div>
-            </>
+            </div>
+          ) : isGuest ? (
+            <button
+              onClick={() => navigate(`/login?redirect=/jobs/${job._id}`)}
+              className="
+      inline-flex
+      items-center
+      gap-2
+      px-4
+      py-2
+      rounded-lg
+      border
+      border-slate-200
+      bg-white
+      text-sm
+      font-semibold
+      text-slate-600
+      hover:border-blue-300
+      hover:text-blue-600
+      hover:bg-blue-50
+      transition-all
+    "
+            >
+              <CiBookmark className="text-lg" />
+              Login to Save
+            </button>
           ) : (
-            /* ================================
-       JOB SEEKER SAVE BUTTON
-    ================================= */
             <button
               onClick={handleToggleSave}
               disabled={checkingSaved || savingJob}
               className={`
-    flex
-    items-center
-    gap-2
-    px-4
-    py-2
-    rounded-lg
-    border
-    text-sm
-    font-medium
-    transition
-    disabled:opacity-60
-    disabled:cursor-not-allowed
+      flex
+      items-center
+      gap-2
+      px-4
+      py-2
+      rounded-lg
+      border
+      text-sm
+      font-medium
+      transition
+      disabled:opacity-60
+      disabled:cursor-not-allowed
 
-    ${
-      isSaved
-        ? "border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100"
-        : "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50"
-    }
-  `}
+      ${
+        isSaved
+          ? "border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100"
+          : "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50"
+      }
+    `}
             >
-              <CiBookmark className="text-lg" />
-
               {checkingSaved
                 ? "Checking..."
                 : savingJob
@@ -910,6 +913,49 @@ const JobDetails = () => {
                     <FaBuilding className="text-slate-400" />
                     Employer View
                   </div>
+                ) : isGuest ? (
+                  <div className="flex flex-wrap items-center gap-3">
+                    <button
+                      onClick={() =>
+                        navigate(`/login?redirect=/jobs/${job._id}`)
+                      }
+                      className="
+        px-7
+        py-2.5
+        rounded-lg
+        bg-blue-600
+        text-white
+        text-sm
+        font-semibold
+        shadow-sm
+        hover:bg-blue-700
+        hover:shadow-md
+        active:scale-[0.98]
+        transition-all
+      "
+                    >
+                      Log In to Apply
+                    </button>
+
+                    <button
+                      onClick={() => navigate("/accountType")}
+                      className="
+        px-6
+        py-2.5
+        rounded-lg
+        border
+        border-slate-200
+        bg-white
+        text-slate-700
+        text-sm
+        font-semibold
+        hover:bg-slate-50
+        transition
+      "
+                    >
+                      Create Account
+                    </button>
+                  </div>
                 ) : checkingApplication ? (
                   <button
                     disabled
@@ -947,7 +993,6 @@ const JobDetails = () => {
         flex
         items-center
         gap-2
-        cursor-default
       "
                     >
                       <FaCheck />
@@ -965,8 +1010,6 @@ const JobDetails = () => {
         text-sm
         font-semibold
         hover:bg-blue-700
-        hover:shadow-md
-        active:scale-[0.98]
         transition-all
       "
                     >
@@ -989,7 +1032,6 @@ const JobDetails = () => {
       flex
       items-center
       gap-2
-      cursor-not-allowed
     "
                   >
                     <FaLock />
@@ -1028,6 +1070,87 @@ const JobDetails = () => {
                       "Apply Now"
                     )}
                   </button>
+                )}
+
+                {isGuest && (
+                  <section
+                    className="
+      mt-6
+      rounded-2xl
+      border
+      border-blue-100
+      bg-blue-50/60
+      p-5
+    "
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                      <div
+                        className="
+          w-11
+          h-11
+          rounded-xl
+          bg-blue-100
+          flex
+          items-center
+          justify-center
+          flex-shrink-0
+        "
+                      >
+                        <FaLock className="text-blue-600" />
+                      </div>
+
+                      <div className="flex-1">
+                        <h3 className="font-bold text-slate-900">
+                          Interested in this opportunity?
+                        </h3>
+
+                        <p className="text-sm text-slate-600 mt-1 leading-6">
+                          Create a free account or log in to apply for this
+                          position, save jobs, and manage your applications.
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          onClick={() =>
+                            navigate(`/login?redirect=/jobs/${job._id}`)
+                          }
+                          className="
+            px-4
+            py-2
+            rounded-lg
+            bg-blue-600
+            text-white
+            text-sm
+            font-semibold
+            hover:bg-blue-700
+            transition
+          "
+                        >
+                          Log In
+                        </button>
+
+                        <button
+                          onClick={() => navigate("/accountType")}
+                          className="
+            px-4
+            py-2
+            rounded-lg
+            bg-white
+            border
+            border-blue-200
+            text-blue-600
+            text-sm
+            font-semibold
+            hover:bg-blue-50
+            transition
+          "
+                        >
+                          Sign Up
+                        </button>
+                      </div>
+                    </div>
+                  </section>
                 )}
               </div>
 
@@ -1552,14 +1675,21 @@ const JobDetails = () => {
                   </h3>
 
                   <p className="text-sm text-slate-500 mt-1">
-                    Submit your application and take the next step in your
-                    career.
+                    {isGuest
+                      ? "Log in or create an account to apply for this position."
+                      : "Submit your application and take the next step in your career."}
                   </p>
                 </div>
 
-                {!application && job.status === "active" && (
+                {!application && job.status === "active" && isJobSeeker && (
                   <button
-                    onClick={() => navigate(`/jobs/${job._id}/apply`)}
+                    onClick={() =>
+                      navigate(
+                        isGuest
+                          ? `/login?redirect=/jobs/${job._id}`
+                          : `/jobs/${job._id}/apply`,
+                      )
+                    }
                     disabled={applying}
                     className="
             inline-flex
@@ -1578,14 +1708,7 @@ const JobDetails = () => {
             disabled:opacity-60
           "
                   >
-                    {applying ? (
-                      <>
-                        <FaSpinner className="animate-spin" />
-                        Applying...
-                      </>
-                    ) : (
-                      "Apply Now"
-                    )}
+                    {isGuest ? "Log In to Apply" : "Apply Now"}
                   </button>
                 )}
               </div>
