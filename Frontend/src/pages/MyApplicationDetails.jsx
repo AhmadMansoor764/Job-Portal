@@ -38,7 +38,7 @@ const MyApplicationDetails = () => {
         setError("");
 
         const response = await fetch(
-          `http://localhost:8000/api/applications/my-applications/${id}`,
+          `${import.meta.env.VITE_API_URL}/api/applications/my-applications/${id}`,
           {
             credentials: "include",
           },

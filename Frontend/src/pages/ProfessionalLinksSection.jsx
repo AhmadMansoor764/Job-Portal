@@ -44,7 +44,7 @@ const ProfessionalLinksSection = () => {
         setLinksError("");
 
         const response = await fetch(
-          "http://localhost:8000/api/profile/links",
+          `${import.meta.env.VITE_API_URL}/api/profile/links`,
           {
             credentials: "include",
           },
@@ -161,18 +161,21 @@ const ProfessionalLinksSection = () => {
       // UPDATE BACKEND
       // -----------------------------------------------
 
-      const response = await fetch("http://localhost:8000/api/profile/links", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/profile/links`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            linkedinUrl: formData.linkedinUrl.trim(),
+            githubUrl: formData.githubUrl.trim(),
+            portfolioUrl: formData.portfolioUrl.trim(),
+          }),
         },
-        credentials: "include",
-        body: JSON.stringify({
-          linkedinUrl: formData.linkedinUrl.trim(),
-          githubUrl: formData.githubUrl.trim(),
-          portfolioUrl: formData.portfolioUrl.trim(),
-        }),
-      });
+      );
 
       const data = await response.json();
 

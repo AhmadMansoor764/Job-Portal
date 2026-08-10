@@ -69,7 +69,7 @@ const SignUp = () => {
     if (step === 1) {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/auth/check-email",
+          `${import.meta.env.VITE_API_URL}/api/auth/check-email`,
           {
             method: "POST",
             headers: {
@@ -108,24 +108,27 @@ const SignUp = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/register", {
-        method: "POST",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        {
+          method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          credentials: "include",
+
+          body: JSON.stringify({
+            name: form.name,
+            email: form.email,
+            password: form.password,
+            phone: form.phone,
+            location: form.location,
+            role: "jobSeeker",
+          }),
         },
-
-        credentials: "include",
-
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          password: form.password,
-          phone: form.phone,
-          location: form.location,
-          role: "jobSeeker",
-        }),
-      });
+      );
 
       const data = await response.json();
 
@@ -172,7 +175,7 @@ const SignUp = () => {
               onSuccess={async (credentialResponse) => {
                 try {
                   const response = await fetch(
-                    "http://localhost:8000/api/auth/google",
+                    `${import.meta.env.VITE_API_URL}/api/auth/google`,
                     {
                       method: "POST",
                       headers: {

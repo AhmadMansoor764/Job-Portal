@@ -37,9 +37,12 @@ const ResumeSection = () => {
         setLoadingResume(true);
         setResumeError("");
 
-        const response = await fetch("http://localhost:8000/api/profile/me", {
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/profile/me`,
+          {
+            credentials: "include",
+          },
+        );
 
         const data = await response.json();
 
@@ -111,11 +114,14 @@ const ResumeSection = () => {
 
       formData.append("resume", selectedFile);
 
-      const response = await fetch("http://localhost:8000/api/profile/resume", {
-        method: "PUT",
-        credentials: "include",
-        body: formData,
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/profile/resume`,
+        {
+          method: "PUT",
+          credentials: "include",
+          body: formData,
+        },
+      );
 
       const data = await response.json();
 
@@ -154,10 +160,13 @@ const ResumeSection = () => {
       setDeletingResume(true);
       setResumeError("");
 
-      const response = await fetch("http://localhost:8000/api/profile/resume", {
-        method: "DELETE",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/profile/resume`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        },
+      );
 
       const data = await response.json();
 

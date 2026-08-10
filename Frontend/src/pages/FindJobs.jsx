@@ -365,7 +365,9 @@ const FindJobs = () => {
         setLoading(true);
         setError("");
 
-        const response = await fetch("http://localhost:8000/api/jobs");
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/jobs`,
+        );
 
         const data = await response.json();
         console.log("Jobs received from backend:", data.jobs);

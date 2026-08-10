@@ -31,7 +31,7 @@ const JobSeekerDashboard = () => {
         setError("");
 
         const response = await fetch(
-          "http://localhost:8000/api/job-seeker/dashboard",
+          `${import.meta.env.VITE_API_URL}/api/job-seeker/dashboard`,
           {
             credentials: "include",
           },

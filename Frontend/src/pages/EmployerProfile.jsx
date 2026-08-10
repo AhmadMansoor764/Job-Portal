@@ -36,7 +36,7 @@ const EmployerProfile = () => {
         setError("");
 
         const response = await fetch(
-          "http://localhost:8000/api/profile/employer",
+          `${import.meta.env.VITE_API_URL}/api/profile/employer`,
           {
             method: "GET",
             credentials: "include",

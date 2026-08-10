@@ -19,7 +19,7 @@ import {
   FaInfoCircle,
 } from "react-icons/fa";
 
-const API_URL = "http://localhost:8000/api/profile";
+const API_URL = `${import.meta.env.VITE_API_URL}/api/profile`;
 
 const EditEmployerProfile = () => {
   const navigate = useNavigate();

@@ -65,7 +65,9 @@ const ApplyJob = () => {
         setLoadingJob(true);
         setJobError("");
 
-        const response = await fetch(`http://localhost:8000/api/jobs/${id}`);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/jobs/${id}`,
+        );
 
         const data = await response.json();
 
@@ -95,10 +97,13 @@ const ApplyJob = () => {
         setLoadingUser(true);
         setUserError("");
 
-        const response = await fetch("http://localhost:8000/api/auth/me", {
-          method: "GET",
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/auth/me`,
+          {
+            method: "GET",
+            credentials: "include",
+          },
+        );
 
         const data = await response.json();
 
@@ -243,7 +248,7 @@ const ApplyJob = () => {
       data.append("cv", formData.cv);
 
       const response = await fetch(
-        `http://localhost:8000/api/applications/${id}/apply`,
+        `${import.meta.env.VITE_API_URL}/api/applications/${id}/apply`,
         {
           method: "POST",
           credentials: "include",
@@ -708,12 +713,23 @@ const ApplyJob = () => {
       `}
                   >
                     <input
-                      id="cv"
-                      name="cv"
                       type="file"
                       accept=".pdf,application/pdf"
-                      onChange={handleCvChange}
-                      className="hidden"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+
+                        if (!file) return;
+
+                        setFormData((previous) => ({
+                          ...previous,
+                          cv: file,
+                        }));
+
+                        setFormErrors((previous) => ({
+                          ...previous,
+                          cv: "",
+                        }));
+                      }}
                     />
 
                     {formData.cv ? (

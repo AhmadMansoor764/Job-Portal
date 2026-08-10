@@ -44,7 +44,7 @@ const EducationSection = () => {
         setEducationError("");
 
         const response = await fetch(
-          "http://localhost:8000/api/profile/education",
+          `${import.meta.env.VITE_API_URL}/api/profile/education`,
           {
             credentials: "include",
           },
@@ -157,7 +157,7 @@ const EducationSection = () => {
         const educationId = education[editingIndex]._id;
 
         const response = await fetch(
-          `http://localhost:8000/api/profile/education/${educationId}`,
+          `${import.meta.env.VITE_API_URL}/api/profile/education/${educationId}`,
           {
             method: "PUT",
             headers: {
@@ -186,7 +186,7 @@ const EducationSection = () => {
       // =================================================
       else {
         const response = await fetch(
-          "http://localhost:8000/api/profile/education",
+          `${import.meta.env.VITE_API_URL}/api/profile/education`,
           {
             method: "POST",
             headers: {
@@ -233,7 +233,7 @@ const EducationSection = () => {
       const educationId = education[index]._id;
 
       const response = await fetch(
-        `http://localhost:8000/api/profile/education/${educationId}`,
+        `${import.meta.env.VITE_API_URL}/api/profile/education/${educationId}`,
         {
           method: "DELETE",
           credentials: "include",

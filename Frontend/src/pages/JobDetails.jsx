@@ -44,10 +44,13 @@ const JobDetails = () => {
       try {
         setLoadingUser(true);
 
-        const response = await fetch("http://localhost:8000/api/auth/me", {
-          method: "GET",
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/auth/me`,
+          {
+            method: "GET",
+            credentials: "include",
+          },
+        );
 
         const data = await response.json();
 
@@ -102,7 +105,9 @@ const JobDetails = () => {
         setLoading(true);
         setError("");
 
-        const response = await fetch(`http://localhost:8000/api/jobs/${id}`);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/jobs/${id}`,
+        );
 
         const data = await response.json();
 
@@ -151,7 +156,7 @@ const JobDetails = () => {
         setApplicationError("");
 
         const response = await fetch(
-          `http://localhost:8000/api/applications/${id}/status`,
+          `${import.meta.env.VITE_API_URL}/api/applications/${id}/status`,
           {
             method: "GET",
             credentials: "include",
@@ -206,7 +211,7 @@ const JobDetails = () => {
         setCheckingSaved(true);
 
         const response = await fetch(
-          `http://localhost:8000/api/jobs/${id}/save/status`,
+          `${import.meta.env.VITE_API_URL}/api/jobs/${id}/save/status`,
           {
             method: "GET",
             credentials: "include",
@@ -240,7 +245,7 @@ const JobDetails = () => {
       setSavingJob(true);
 
       const response = await fetch(
-        `http://localhost:8000/api/jobs/${id}/save`,
+        `${import.meta.env.VITE_API_URL}/api/jobs/${id}/save`,
         {
           method: isSaved ? "DELETE" : "POST",
           credentials: "include",
@@ -275,7 +280,7 @@ const JobDetails = () => {
       setApplicationError("");
 
       const response = await fetch(
-        `http://localhost:8000/api/applications/${id}/apply`,
+        `${import.meta.env.VITE_API_URL}/api/applications/${id}/apply`,
         {
           method: "POST",
           credentials: "include",
@@ -436,7 +441,7 @@ const JobDetails = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/jobs/${job._id}/${
+        `${import.meta.env.VITE_API_URL}/api/jobs/${job._id}/${
           isCurrentlyActive ? "close" : "reopen"
         }`,
         {

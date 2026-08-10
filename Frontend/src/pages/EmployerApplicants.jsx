@@ -32,7 +32,7 @@ const EmployerApplicants = () => {
         setError("");
 
         const response = await fetch(
-          "http://localhost:8000/api/applications/employer/applicants",
+          `${import.meta.env.VITE_API_URL}/api/applications/employer/applicants`,
           {
             credentials: "include",
           },

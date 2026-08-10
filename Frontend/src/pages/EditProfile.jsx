@@ -27,9 +27,12 @@ const EditProfile = () => {
         setLoading(true);
         setError("");
 
-        const response = await fetch("http://localhost:8000/api/profile/me", {
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/profile/me`,
+          {
+            credentials: "include",
+          },
+        );
 
         const data = await response.json();
 
@@ -83,14 +86,17 @@ const EditProfile = () => {
       setError("");
       setSuccess("");
 
-      const response = await fetch("http://localhost:8000/api/profile/basic", {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/profile/basic`,
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
         },
-        body: JSON.stringify(formData),
-      });
+      );
 
       const data = await response.json();
 

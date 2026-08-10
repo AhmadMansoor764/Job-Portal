@@ -64,26 +64,29 @@ const SignupEmployer = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/register", {
-        method: "POST",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        {
+          method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          credentials: "include",
+
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            phone: formData.phone,
+            location: formData.location,
+
+            // VERY IMPORTANT
+            role: "employer",
+          }),
         },
-
-        credentials: "include",
-
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          phone: formData.phone,
-          location: formData.location,
-
-          // VERY IMPORTANT
-          role: "employer",
-        }),
-      });
+      );
 
       const data = await response.json();
 

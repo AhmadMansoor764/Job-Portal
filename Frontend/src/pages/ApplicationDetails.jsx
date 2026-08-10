@@ -55,7 +55,7 @@ const ApplicationDetails = () => {
         setError("");
 
         const response = await fetch(
-          `http://localhost:8000/api/applications/employer/${id}`,
+          `${import.meta.env.VITE_API_URL}/api/applications/employer/${id}`,
           {
             credentials: "include",
           },
@@ -88,7 +88,7 @@ const ApplicationDetails = () => {
       setUpdatingStatus(true);
 
       const response = await fetch(
-        `http://localhost:8000/api/applications/employer/${id}/status`,
+        `${import.meta.env.VITE_API_URL}/api/applications/employer/${id}/status`,
         {
           method: "PUT",
           headers: {
@@ -153,7 +153,7 @@ const ApplicationDetails = () => {
       setSchedulingInterview(true);
 
       const response = await fetch(
-        `http://localhost:8000/api/applications/employer/${id}/interview`,
+        `${import.meta.env.VITE_API_URL}/api/applications/employer/${id}/interview`,
         {
           method: "PUT",
           headers: {
@@ -187,7 +187,7 @@ const ApplicationDetails = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/applications/employer/${id}/interview/complete`,
+        `${import.meta.env.VITE_API_URL}/api/applications/employer/${id}/interview/complete`,
         {
           method: "PATCH",
           credentials: "include",
@@ -217,7 +217,7 @@ const ApplicationDetails = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/applications/employer/${id}/interview/cancel`,
+        `${import.meta.env.VITE_API_URL}/api/applications/employer/${id}/interview/cancel`,
         {
           method: "PATCH",
           credentials: "include",

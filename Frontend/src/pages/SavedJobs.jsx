@@ -31,7 +31,7 @@ const SavedJobs = () => {
         setError("");
 
         const response = await fetch(
-          "http://localhost:8000/api/jobs/saved-jobs",
+          `${import.meta.env.VITE_API_URL}/api/jobs/saved-jobs`,
           {
             method: "GET",
             credentials: "include",
@@ -66,7 +66,7 @@ const SavedJobs = () => {
   const removeSavedJob = async (jobId) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/jobs/${jobId}/save`,
+        `${import.meta.env.VITE_API_URL}/api/jobs/${jobId}/save`,
         {
           method: "DELETE",
           credentials: "include",
@@ -92,7 +92,7 @@ const SavedJobs = () => {
   const removeDeletedSavedJob = async (savedJobId) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/jobs/saved/${savedJobId}`,
+        `${import.meta.env.VITE_API_URL}/api/jobs/saved/${savedJobId}`,
         {
           method: "DELETE",
           credentials: "include",

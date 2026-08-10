@@ -24,9 +24,12 @@ const MyJobs = () => {
         setLoading(true);
         setError("");
 
-        const response = await fetch("http://localhost:8000/api/jobs/my-jobs", {
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/jobs/my-jobs`,
+          {
+            credentials: "include",
+          },
+        );
 
         const data = await response.json();
 

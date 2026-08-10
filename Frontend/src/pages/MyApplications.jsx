@@ -1055,7 +1055,7 @@ const MyApplications = () => {
         setError("");
 
         const response = await fetch(
-          "http://localhost:8000/api/applications/my-applications",
+          `${import.meta.env.VITE_API_URL}/api/applications/my-applications`,
           {
             credentials: "include",
           },

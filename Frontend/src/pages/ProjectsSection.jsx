@@ -39,7 +39,7 @@ const ProjectsSection = () => {
         setProjectsError("");
 
         const response = await fetch(
-          "http://localhost:8000/api/profile/projects",
+          `${import.meta.env.VITE_API_URL}/api/profile/projects`,
           {
             method: "GET",
             credentials: "include",
@@ -153,7 +153,7 @@ const ProjectsSection = () => {
 
       if (editingIndex === null) {
         const response = await fetch(
-          "http://localhost:8000/api/profile/projects",
+          `${import.meta.env.VITE_API_URL}/api/profile/projects`,
           {
             method: "POST",
             headers: {
@@ -181,7 +181,7 @@ const ProjectsSection = () => {
         const projectId = projects[editingIndex]._id;
 
         const response = await fetch(
-          `http://localhost:8000/api/profile/projects/${projectId}`,
+          `${import.meta.env.VITE_API_URL}/api/profile/projects/${projectId}`,
           {
             method: "PUT",
             headers: {
@@ -240,7 +240,7 @@ const ProjectsSection = () => {
       const projectId = projects[index]._id;
 
       const response = await fetch(
-        `http://localhost:8000/api/profile/projects/${projectId}`,
+        `${import.meta.env.VITE_API_URL}/api/profile/projects/${projectId}`,
         {
           method: "DELETE",
           credentials: "include",

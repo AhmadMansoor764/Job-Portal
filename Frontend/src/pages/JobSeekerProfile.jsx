@@ -39,9 +39,12 @@ const JobSeekerProfile = () => {
         setLoading(true);
         setError("");
 
-        const response = await fetch("http://localhost:8000/api/profile/me", {
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/profile/me`,
+          {
+            credentials: "include",
+          },
+        );
 
         const data = await response.json();
 
@@ -161,7 +164,7 @@ const JobSeekerProfile = () => {
       formData.append("profileImage", file);
 
       const response = await fetch(
-        "http://localhost:8000/api/profile/profile-image",
+        `${import.meta.env.VITE_API_URL}/api/profile/profile-image`,
         {
           method: "PUT",
           credentials: "include",
@@ -203,7 +206,7 @@ const JobSeekerProfile = () => {
       setUploadingImage(true);
 
       const response = await fetch(
-        "http://localhost:8000/api/profile/profile-image",
+        `${import.meta.env.VITE_API_URL}/api/profile/profile-image`,
         {
           method: "DELETE",
           credentials: "include",

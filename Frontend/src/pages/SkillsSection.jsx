@@ -24,7 +24,7 @@ const SkillsSection = () => {
         setSkillsError("");
 
         const response = await fetch(
-          "http://localhost:8000/api/profile/skills",
+          `${import.meta.env.VITE_API_URL}/api/profile/skills`,
           {
             credentials: "include",
           },
@@ -99,16 +99,19 @@ const SkillsSection = () => {
       setSkillsError("");
       setSuccessMessage("");
 
-      const response = await fetch("http://localhost:8000/api/profile/skills", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/profile/skills`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            skills,
+          }),
         },
-        credentials: "include",
-        body: JSON.stringify({
-          skills,
-        }),
-      });
+      );
 
       const data = await response.json();
 

@@ -57,7 +57,7 @@ const CompleteProfile = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/api/auth/complete-profile",
+        `${import.meta.env.VITE_API_URL}/api/auth/complete-profile`,
         {
           method: "PUT",
 

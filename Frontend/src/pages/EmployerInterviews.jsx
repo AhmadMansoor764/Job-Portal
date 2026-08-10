@@ -23,7 +23,7 @@ const EmployerInterviews = () => {
         setLoading(true);
 
         const response = await fetch(
-          "http://localhost:8000/api/applications/employer/interviews",
+          `${import.meta.env.VITE_API_URL}/api/applications/employer/interviews`,
           {
             credentials: "include",
           },
@@ -50,7 +50,7 @@ const EmployerInterviews = () => {
   const completeInterview = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/applications/employer/${id}/interview/complete`,
+        `${import.meta.env.VITE_API_URL}/api/applications/employer/${id}/interview/complete`,
         {
           method: "PATCH",
           credentials: "include",
@@ -76,7 +76,7 @@ const EmployerInterviews = () => {
   const cancelInterview = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/applications/employer/${id}/interview/cancel`,
+        `${import.meta.env.VITE_API_URL}/api/applications/employer/${id}/interview/cancel`,
         {
           method: "PATCH",
           credentials: "include",

@@ -37,9 +37,12 @@ const EditJob = () => {
         setLoading(true);
         setError("");
 
-        const response = await fetch(`http://localhost:8000/api/jobs/${id}`, {
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/jobs/${id}`,
+          {
+            credentials: "include",
+          },
+        );
 
         const data = await response.json();
 
@@ -126,14 +129,17 @@ const EditJob = () => {
           formData.maxSalary === "" ? null : Number(formData.maxSalary),
       };
 
-      const response = await fetch(`http://localhost:8000/api/jobs/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/jobs/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(payload),
         },
-        credentials: "include",
-        body: JSON.stringify(payload),
-      });
+      );
 
       const data = await response.json();
 

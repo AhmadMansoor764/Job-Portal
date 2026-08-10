@@ -21,20 +21,23 @@ const Login = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch("http://localhost:8000/api/auth/login", {
-        method: "POST",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
+        {
+          method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          credentials: "include",
+
+          body: JSON.stringify({
+            email,
+            password,
+          }),
         },
-
-        credentials: "include",
-
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+      );
 
       const data = await response.json();
 
@@ -101,7 +104,7 @@ const Login = () => {
             onSuccess={async (credentialResponse) => {
               try {
                 const response = await fetch(
-                  "http://localhost:8000/api/auth/google",
+                  `${import.meta.env.VITE_API_URL}/api/auth/google`,
                   {
                     method: "POST",
                     headers: {

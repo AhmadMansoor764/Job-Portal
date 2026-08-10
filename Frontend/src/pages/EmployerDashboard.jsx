@@ -22,7 +22,7 @@ const EmployerDashboard = () => {
       setError("");
 
       const response = await fetch(
-        "http://localhost:8000/api/employer/dashboard",
+        `${import.meta.env.VITE_API_URL}/api/employer/dashboard`,
         {
           method: "GET",
           credentials: "include",
