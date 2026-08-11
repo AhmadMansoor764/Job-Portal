@@ -572,7 +572,7 @@ const JobSeekerDashboard = () => {
                     {recommendedJobs.map((job) => (
                       <Link
                         key={job._id}
-                        to={`/job/${job._id}`}
+                        to={`/jobs/${job._id}`}
                         className="
             group
             rounded-2xl
