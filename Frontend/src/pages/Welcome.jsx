@@ -17,7 +17,7 @@ const API_URL = `${import.meta.env.VITE_API_URL}/api`;
 
 const categoryConfig = [
   {
-    title: "Development",
+    title: "Developments",
     icon: <FaCode />,
     iconBg: "bg-green-100",
     iconColor: "text-green-500",
@@ -62,6 +62,35 @@ const Welcome = () => {
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const [categoryCounts, setCategoryCounts] = useState({});
+  const [loadingCategoryCounts, setLoadingCategoryCounts] = useState(true);
+
+  useEffect(() => {
+    const fetchCategoryCounts = async () => {
+      try {
+        setLoadingCategoryCounts(true);
+
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/jobs/categories/counts`,
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to fetch category counts");
+        }
+
+        setCategoryCounts(data.counts || {});
+      } catch (error) {
+        console.error("Error fetching category counts:", error);
+      } finally {
+        setLoadingCategoryCounts(false);
+      }
+    };
+
+    fetchCategoryCounts();
+  }, []);
 
   // =====================================================
   // GET ACTIVE JOBS
@@ -888,7 +917,7 @@ const Welcome = () => {
 
                 <button
                   type="button"
-                  onClick={() => navigate("/findjob")}
+                  onClick={() => navigate("/login")}
                   className="
                       mt-5
                       px-5
@@ -901,7 +930,7 @@ const Welcome = () => {
                       hover:bg-indigo-700
                     "
                 >
-                  Browse All Jobs
+                  Login to Browse All Jobs
                 </button>
               </div>
             )}
