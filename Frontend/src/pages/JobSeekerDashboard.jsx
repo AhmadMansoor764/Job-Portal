@@ -68,6 +68,7 @@ const JobSeekerDashboard = () => {
   const recentApplications = dashboard?.recentApplications || [];
 
   const recommendedJobs = dashboard?.recommendedJobs || [];
+
   // =====================================================
   // GREETING
   // =====================================================

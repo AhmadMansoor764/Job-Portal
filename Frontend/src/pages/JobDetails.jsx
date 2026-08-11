@@ -470,7 +470,7 @@ const JobDetails = () => {
             if (isGuest) {
               navigate("/");
             } else if (user?.role === "jobSeeker") {
-              navigate("/findjobs");
+              navigate("/findjob");
             } else {
               navigate(-1);
             }
