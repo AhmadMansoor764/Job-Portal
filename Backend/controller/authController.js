@@ -2,8 +2,16 @@ import User from "../model/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import client from "../config/google.js";
+import EmailVerification from "../model/EmailVerification.js";
+import transporter from "../config/mail.js";
+import PendingRegistration from "../model/PendingRegistration.js";
 
 const isProduction = process.env.NODE_ENV === "production";
+
+// generation the otp code to verify the email
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
 
 const cookieOptions = {
   httpOnly: true,
@@ -16,64 +24,186 @@ export const registerUser = async (req, res) => {
   try {
     const { name, email, password, phone, location, role } = req.body;
 
+    // ==========================================
+    // VALIDATION
+    // ==========================================
+
     if (!name || !email || !password || !phone || !location || !role) {
       return res.status(400).json({
-        message: "All fields are required",
         success: false,
+        message: "All fields are required",
       });
     }
 
-    const existingUser = await User.findOne({ email });
+    // Only allow these two roles
+    if (!["jobSeeker", "employer"].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid account role",
+      });
+    }
+
+    // ==========================================
+    // NORMALIZE EMAIL
+    // ==========================================
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // ==========================================
+    // CHECK IF USER ALREADY EXISTS
+    // ==========================================
+
+    const existingUser = await User.findOne({
+      email: normalizedEmail,
+    });
 
     if (existingUser) {
       return res.status(400).json({
-        message: "Email already registered",
         success: false,
+        message: "Email already registered",
       });
     }
 
+    // ==========================================
+    // HASH PASSWORD
+    // ==========================================
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await User.create({
-      name,
-      email,
+    // ==========================================
+    // REMOVE OLD PENDING REGISTRATION
+    // ==========================================
+
+    await PendingRegistration.deleteMany({
+      email: normalizedEmail,
+    });
+
+    // ==========================================
+    // REMOVE OLD OTP
+    // ==========================================
+
+    await EmailVerification.deleteMany({
+      email: normalizedEmail,
+    });
+
+    // ==========================================
+    // SAVE PENDING REGISTRATION
+    // ==========================================
+
+    await PendingRegistration.create({
+      name: name.trim(),
+      email: normalizedEmail,
       password: hashedPassword,
-      phone,
-      location,
+      phone: phone.trim(),
+      location: location.trim(),
       role,
     });
 
-    const token = jwt.sign(
-      {
-        id: user._id,
-        role: user.role,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1d",
-      },
-    );
+    // ==========================================
+    // GENERATE OTP
+    // ==========================================
 
-    res.cookie("token", token, cookieOptions);
+    const otp = generateOTP();
 
-    return res.status(201).json({
-      message: "User have successfully registered",
+    // OTP expires after 10 minutes
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    // ==========================================
+    // SAVE OTP
+    // ==========================================
+
+    await EmailVerification.create({
+      email: normalizedEmail,
+      otp,
+      expiresAt,
+    });
+
+    // ==========================================
+    // SEND EMAIL
+    // ==========================================
+
+    console.log("EMAIL USER:", process.env.EMAIL_USER);
+    console.log("OTP RECIPIENT:", normalizedEmail);
+
+    const info = await transporter.sendMail({
+      from: `"JobPortal" <${process.env.EMAIL_USER}>`,
+      to: normalizedEmail,
+      subject: "Verify your JobPortal email",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 30px;">
+          
+          <h2 style="color: #2563eb;">
+            Welcome to JobPortal
+          </h2>
+
+          <p>
+            Hello ${name.trim()},
+          </p>
+
+          <p>
+            Thank you for creating your JobPortal account.
+            Please use the verification code below to verify your email address.
+          </p>
+
+          <div
+            style="
+              background: #f1f5f9;
+              padding: 20px;
+              text-align: center;
+              border-radius: 10px;
+              margin: 25px 0;
+            "
+          >
+            <div
+              style="
+                font-size: 32px;
+                font-weight: bold;
+                letter-spacing: 8px;
+                color: #1e293b;
+              "
+            >
+              ${otp}
+            </div>
+          </div>
+
+          <p>
+            This verification code will expire in <strong>10 minutes</strong>.
+          </p>
+
+          <p>
+            If you did not create a JobPortal account, you can safely ignore
+            this email.
+          </p>
+
+          <hr style="margin-top: 30px;" />
+
+          <p style="font-size: 12px; color: #64748b;">
+            JobPortal
+          </p>
+
+        </div>
+      `,
+    });
+
+    console.log("Email sent successfully:", info.messageId);
+
+    // ==========================================
+    // IMPORTANT:
+    // DO NOT CREATE USER YET
+    // DO NOT CREATE JWT YET
+    // ==========================================
+
+    return res.status(200).json({
       success: true,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        location: user.location,
-        role: user.role,
-      },
+      message: "Verification code sent to your email",
+      email: normalizedEmail,
     });
   } catch (error) {
-    console.log(error);
+    console.error("Register user error:", error);
 
     return res.status(500).json({
-      message: error.message,
       success: false,
+      message: error.message || "Failed to start registration",
     });
   }
 };
@@ -93,6 +223,167 @@ export const checkEmail = async (req, res) => {
   res.json({
     exists: false,
   });
+};
+
+export const verifyEmail = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    // ==========================================
+    // VALIDATION
+    // ==========================================
+
+    if (!email || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and verification code are required",
+      });
+    }
+
+    // ==========================================
+    // NORMALIZE EMAIL
+    // ==========================================
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // ==========================================
+    // FIND OTP
+    // ==========================================
+
+    const verification = await EmailVerification.findOne({
+      email: normalizedEmail,
+    });
+
+    if (!verification) {
+      return res.status(400).json({
+        success: false,
+        message: "Verification code not found or expired",
+      });
+    }
+
+    // ==========================================
+    // CHECK EXPIRATION
+    // ==========================================
+
+    if (verification.expiresAt < new Date()) {
+      await EmailVerification.deleteOne({
+        _id: verification._id,
+      });
+
+      return res.status(400).json({
+        success: false,
+        message: "Verification code has expired",
+      });
+    }
+
+    // ==========================================
+    // CHECK OTP
+    // ==========================================
+
+    if (verification.otp !== otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid verification code",
+      });
+    }
+
+    // ==========================================
+    // FIND PENDING REGISTRATION
+    // ==========================================
+
+    const pendingUser = await PendingRegistration.findOne({
+      email: normalizedEmail,
+    });
+
+    if (!pendingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Registration information not found",
+      });
+    }
+
+    // ==========================================
+    // CREATE REAL USER
+    // ==========================================
+
+    const user = await User.create({
+      name: pendingUser.name,
+      email: pendingUser.email,
+      password: pendingUser.password,
+      phone: pendingUser.phone,
+      location: pendingUser.location,
+      role: pendingUser.role,
+      emailVerified: true,
+    });
+
+    // ==========================================
+    // CREATE JWT
+    // ==========================================
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      },
+    );
+
+    // ==========================================
+    // SET AUTH COOKIE
+    // ==========================================
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // ==========================================
+    // DELETE OTP
+    // ==========================================
+
+    await EmailVerification.deleteOne({
+      _id: verification._id,
+    });
+
+    // ==========================================
+    // DELETE PENDING REGISTRATION
+    // ==========================================
+
+    await PendingRegistration.deleteOne({
+      _id: pendingUser._id,
+    });
+
+    // ==========================================
+    // SUCCESS
+    // ==========================================
+
+    return res.status(201).json({
+      success: true,
+      message: "Email verified successfully",
+
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        location: user.location,
+        role: user.role,
+        emailVerified: user.emailVerified,
+      },
+    });
+  } catch (error) {
+    console.error("Verify email error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to verify email",
+    });
+  }
 };
 
 export const login = async (req, res) => {

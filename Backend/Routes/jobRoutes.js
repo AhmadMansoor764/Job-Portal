@@ -15,6 +15,7 @@ import {
   updateJob,
   closeJob,
   reopenJob,
+  getCategoryCounts,
 } from "../controller/jobController.js";
 const router = express.Router();
 // Create a new job
@@ -38,6 +39,8 @@ router.delete("/:id/save", authMiddleware, removeSavedJob);
 router.get("/:id/save/status", authMiddleware, checkSavedJob);
 
 router.delete("/saved/:savedJobId", authMiddleware, removeSavedJobById);
+
+router.get("/categories/counts", getCategoryCounts);
 
 // Get one job
 router.get("/:id", getJobById);

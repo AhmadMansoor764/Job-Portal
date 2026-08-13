@@ -44,6 +44,11 @@ const userSchema = new mongoose.Schema(
       required: false,
     },
 
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+
     // =====================================================
     // PROFILE INFORMATION
     // =====================================================

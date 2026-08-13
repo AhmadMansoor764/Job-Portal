@@ -21,7 +21,8 @@
     "google-auth-library": "^10.9.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.7.2",
-    "multer": "^2.2.0"
+    "multer": "^2.2.0",
+    "nodemailer": "^9.0.5"
   },
   "devDependencies": {
     "nodeman": "^1.1.2",

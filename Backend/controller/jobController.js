@@ -621,3 +621,44 @@ export const reopenJob = async (req, res) => {
     });
   }
 };
+
+export const getCategoryCounts = async (req, res) => {
+  try {
+    const categoryCounts = await Job.aggregate([
+      {
+        $match: {
+          status: "active",
+        },
+      },
+      {
+        $group: {
+          _id: "$category",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          count: -1,
+        },
+      },
+    ]);
+
+    const counts = {};
+
+    categoryCounts.forEach((item) => {
+      counts[item._id] = item.count;
+    });
+
+    res.status(200).json({
+      success: true,
+      counts,
+    });
+  } catch (error) {
+    console.error("Error getting category counts:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to get category counts",
+    });
+  }
+};
